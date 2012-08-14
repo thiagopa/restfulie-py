@@ -10,9 +10,7 @@ class JsonResource(Resource):
         """
         JsonResource attributes can be accessed with 'dot'.
         """
-        links = self._parse_links(dict_)
         self._dict = dict_
-        self._links = Links(links)
 
         for key, value in dict_.items():
             if isinstance(value, (list, tuple)):
@@ -33,21 +31,5 @@ class JsonResource(Resource):
                 dicts.extend(self._find_dicts_in_dict(v))
         return dicts
 
-    def _parse_links(self, dict_):
-        """
-        Find links on JSON dictionary.
-        """
-        for d in self._find_dicts_in_dict(dict_):
-            if 'link' in d:
-                return [Link(href=link.get('href'), rel=link.get('rel'), content_type=link.get('type')) for link in d['link']]
-
-        return []
-
-    def links(self):
-        return self._links
-
-    def link(self, rel):
-        return self.links().get(rel)
-        
     def __len__(self):
         return len(self._dict)        
